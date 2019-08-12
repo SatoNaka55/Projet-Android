@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.projetandroid.database.Database;
+import com.example.projetandroid.model.User;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -17,26 +20,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goLogin(View myView) {
-       /* UserDatabase uDB = new UserDatabase();
+       Database uDB = new Database();
 
-        User u1 = new User("Adam", "pw", "Adam", "Asselin");
-        uDB.addUser(u1);*/
 
-        Intent myIntent1 = new Intent(this, EmployeeListActivity.class);
+
+        Intent empListIntent = new Intent(this, EmployeeListActivity.class);
+        Intent loginErrorIntent = new Intent(this, LoginErrorActivity.class);
         EditText inputU = (EditText) findViewById(R.id.usernameInput);
         EditText inputP = (EditText) findViewById(R.id.passwordInput);
         TextView loginError = (TextView) findViewById(R.id.loginError);
+        String username = inputU.getText().toString();
+        String password = inputP.getText().toString();
 
-        if (inputU.equals(null) || inputP.equals(null)) {
+        //Validate that text fields are filled
+        if (username.equals("") || password.equals("")) {
             loginError.setText("Please fill in your username and password");
-        }/* else {
+        }
+        //Validate if username is alphanumeric
+       /* else if(!username.matches("^[a-zA-Z0-9]+$")){
+            loginError.setText("Invalid Username. Only alphanumeric entries are accepted");
+        }*/
+        //Validate password length
+        else if(password.length() < 8){
+            loginError.setText("Password is too short. Please enter at least 8 characters");
+        }
+        //Validate password characters
+      /*  else if(!password.matches("[$&+,:;=?@#|'<>.^_()%!-]")) {
+            loginError.setText("Password invalid. Please use a special character: $&+,:;=?@#|'<>.^\\_()%!-");
+        }*/
+
+        else if(!password.matches("[a-z]+?")){
+            loginError.setText("Password invalid. Please use at least one lowercase character");
+        }
+
+        else {
+
             for (User u : uDB.getUserDB()) {
-                if (u.getUsername().equals(inputU) && u.getPassword().equals(inputP)) {
-                    myIntent1.putExtra("user", u);
-                    startActivity(myIntent1);
+                if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
+                    startActivity(empListIntent);
                 }
             }
-            loginError.setText("Username and/or password not found");
-        }*/
+            loginErrorIntent.putExtra("username",username);
+            loginErrorIntent.putExtra("password",password);
+            startActivity(loginErrorIntent);
+        }
+        }
     }
-}
+
