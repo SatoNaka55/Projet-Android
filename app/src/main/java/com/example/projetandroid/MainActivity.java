@@ -81,15 +81,21 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(isValidationOk){
 
-            Boolean isFound;
+            Boolean isFound = false;
             for (User u : uDB.getUserDB()) {
                 if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
-                    startActivity(empListIntent);
+                    isFound = true;
+                    break;
                 }
             }
-            loginErrorIntent.putExtra("username",username);
-            loginErrorIntent.putExtra("password",password);
-            startActivity(loginErrorIntent);
+            if(isFound) {
+                startActivity(empListIntent);
+            } else {
+                loginErrorIntent.putExtra("username",username);
+                loginErrorIntent.putExtra("password",password);
+                startActivity(loginErrorIntent);
+            }
+
         }
     }
 }
