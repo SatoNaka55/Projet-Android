@@ -12,7 +12,7 @@ public class Database {
         public Database (){
             ArrayList<User> uDB = new ArrayList<User>();
             this.userDB = uDB;
-            this.userDB.add(new User("Adam", "pw", "Adam", "Asselin"));
+            this.userDB.add(new User("Adam", "Pa$$w0rd", "Adam", "Asselin"));
         }
 
         public ArrayList<User> getUserDB() {

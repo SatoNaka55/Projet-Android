@@ -33,28 +33,55 @@ public class MainActivity extends AppCompatActivity {
         String password = inputP.getText().toString();
 
         //Validate that text fields are filled
-        if (username.equals("") || password.equals("")) {
-            loginError.setText("Please fill in your username and password");
-        }
-        //Validate if username is alphanumeric
-       /* else if(!username.matches("^[a-zA-Z0-9]+$")){
-            loginError.setText("Invalid Username. Only alphanumeric entries are accepted");
-        }*/
-        //Validate password length
-        else if(password.length() < 8){
-            loginError.setText("Password is too short. Please enter at least 8 characters");
-        }
-        //Validate password characters
-      /*  else if(!password.matches("[$&+,:;=?@#|'<>.^_()%!-]")) {
-            loginError.setText("Password invalid. Please use a special character: $&+,:;=?@#|'<>.^\\_()%!-");
-        }*/
+        Boolean areFieldsEmpty = true;
+        Boolean isUserAlphaNumeric = false;
+        Boolean isPwLengthOk = false;
+        Boolean isPwAtLeastOneNumber = false;
+        Boolean isPwAtLeastOneUppercase = false;
+        Boolean isPwAtLeastOneLowercase = false;
+        Boolean isPwAtLeastOneSpecial = false;
+        Boolean isValidationOk = false;
 
-        else if(!password.matches("[a-z]+?")){
-            loginError.setText("Password invalid. Please use at least one lowercase character");
+        areFieldsEmpty = username.equals("") || password.equals("");
+        isUserAlphaNumeric = username.matches("^[a-zA-Z0-9_]*$");
+        isPwLengthOk = password.length() >= 8;
+        isPwAtLeastOneNumber = password.matches(".*[0-9].*");
+        isPwAtLeastOneUppercase = password.matches(".*[A-Z].*");
+        isPwAtLeastOneLowercase = password.matches(".*[a-z].*");
+        isPwAtLeastOneSpecial = password.matches(".*[$&+,:;=?@#|'<>.^_()%!-].*");
+
+        isValidationOk = !areFieldsEmpty &&
+                isUserAlphaNumeric &&
+                isPwLengthOk &&
+                isPwAtLeastOneNumber &&
+                isPwAtLeastOneUppercase &&
+                isPwAtLeastOneLowercase &&
+                isPwAtLeastOneSpecial;
+
+        if(areFieldsEmpty) {
+            loginError.setText("Please fill in your username and password.");
         }
+        else if(!isUserAlphaNumeric) {
+            loginError.setText("Please use only letters and numbers for the username.");
+        }
+        else if(!isPwAtLeastOneUppercase) {
+            loginError.setText("Password invalid. Please use at least one upper character.");
+        }
+        else if(!isPwAtLeastOneLowercase) {
+            loginError.setText("Password invalid. Please use at least one lower character.");
+        }
+        else if(!isPwAtLeastOneNumber) {
+            loginError.setText("Password invalid. Please use at least one number.");
+        }
+        else if(!isPwAtLeastOneSpecial) {
+            loginError.setText("Password invalid. Please use at least one special character ($&+,:;=?@#|'<>.^\\\\_()%!-).");
+        }
+        else if(!isPwLengthOk) {
+            loginError.setText("Password length invalid. Please use at least 8 characters.");
+        }
+        else if(isValidationOk){
 
-        else {
-
+            Boolean isFound;
             for (User u : uDB.getUserDB()) {
                 if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
                     startActivity(empListIntent);
@@ -64,6 +91,6 @@ public class MainActivity extends AppCompatActivity {
             loginErrorIntent.putExtra("password",password);
             startActivity(loginErrorIntent);
         }
-        }
     }
+}
 
